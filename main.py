@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 from models import alexnet, fc
-from utils import get_id, get_data, accuracy
+from utils import get_data, accuracy
 from utils import get_grads, alpha_estimator, alpha_estimator2
 from utils import linear_hinge_loss, get_layerWise_norms
 
