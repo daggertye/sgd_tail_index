@@ -14,52 +14,53 @@ from utils import linear_hinge_loss, get_layerWise_norms
 
 def eval(eval_loader, net, crit, opt, args, test=True):
 
-    net.eval()
+    #net.eval()
 
-    # run over both test and train set    
-    total_size = 0
-    total_loss = 0
-    total_acc = 0
-    grads = []
-    outputs = []
+    # run over both test and train set
+    with torch.no_grad():    
+        total_size = 0
+        total_loss = 0
+        total_acc = 0
+        grads = []
+        outputs = []
 
-    P = 0 # num samples / batch size
-    for x, y in eval_loader:
-        P += 1
-        # loop over dataset
-        x, y = x.to(args.device), y.to(args.device)
-        opt.zero_grad()
-        out = net(x)
+        P = 0 # num samples / batch size
+        for x, y in eval_loader:
+            P += 1
+            # loop over dataset
+            x, y = x.to(args.device), y.to(args.device)
+            opt.zero_grad()
+            out = net(x)
+            
+            outputs.append(out)
+
+            loss = crit(out, y)
+            prec = accuracy(out, y)
+            bs = x.size(0)
+
+            # loss.backward()
+            # grad = get_grads(net).cpu()
+            # grads.append(grad)
+
+            total_size += int(bs)
+            total_loss += float(loss) * bs
+            total_acc += float(prec) * bs
+
+        # M = len(grads[0]) # total number of parameters
+        # grads = torch.cat(grads).view(-1, M)
+        # mean_grad = grads.sum(0) / P
+        # noise_norm = (grads - mean_grad).norm(dim=1)
         
-        outputs.append(out)
+        # N = M * P 
 
-        loss = crit(out, y)
-        prec = accuracy(out, y)
-        bs = x.size(0)
-
-        # loss.backward()
-        # grad = get_grads(net).cpu()
-        # grads.append(grad)
-
-        total_size += int(bs)
-        total_loss += float(loss) * bs
-        total_acc += float(prec) * bs
-
-    # M = len(grads[0]) # total number of parameters
-    # grads = torch.cat(grads).view(-1, M)
-    # mean_grad = grads.sum(0) / P
-    # noise_norm = (grads - mean_grad).norm(dim=1)
-    
-    # N = M * P 
-
-    # for i in range(1, 1 + int(math.sqrt(N))):
-    #     if N%i == 0:
-    #         m = i
-    # alpha = alpha_estimator(m, (grads - mean_grad).view(-1, 1))
-    
-    # del grads
-    # del mean_grad
-    
+        # for i in range(1, 1 + int(math.sqrt(N))):
+        #     if N%i == 0:
+        #         m = i
+        # alpha = alpha_estimator(m, (grads - mean_grad).view(-1, 1))
+        
+        # del grads
+        # del mean_grad
+        
     hist = [
         total_loss / total_size, 
         total_acc / total_size,
@@ -175,7 +176,7 @@ if __name__ == '__main__':
                 print('yaaay all training data is correctly classified!!!')
                 STOP = True
 
-        net.train()
+        #net.train()
         
         x, y = x.to(args.device), y.to(args.device)
 
