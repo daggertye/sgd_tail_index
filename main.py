@@ -37,38 +37,38 @@ def eval(eval_loader, net, crit, opt, args, test=True):
         prec = accuracy(out, y)
         bs = x.size(0)
 
-        loss.backward()
-        grad = get_grads(net).cpu()
-        grads.append(grad)
+        # loss.backward()
+        # grad = get_grads(net).cpu()
+        # grads.append(grad)
 
         total_size += int(bs)
         total_loss += float(loss) * bs
         total_acc += float(prec) * bs
 
-    M = len(grads[0]) # total number of parameters
-    grads = torch.cat(grads).view(-1, M)
-    mean_grad = grads.sum(0) / P
-    noise_norm = (grads - mean_grad).norm(dim=1)
+    # M = len(grads[0]) # total number of parameters
+    # grads = torch.cat(grads).view(-1, M)
+    # mean_grad = grads.sum(0) / P
+    # noise_norm = (grads - mean_grad).norm(dim=1)
     
-    N = M * P 
+    # N = M * P 
 
-    for i in range(1, 1 + int(math.sqrt(N))):
-        if N%i == 0:
-            m = i
-    alpha = alpha_estimator(m, (grads - mean_grad).view(-1, 1))
+    # for i in range(1, 1 + int(math.sqrt(N))):
+    #     if N%i == 0:
+    #         m = i
+    # alpha = alpha_estimator(m, (grads - mean_grad).view(-1, 1))
     
-    del grads
-    del mean_grad
+    # del grads
+    # del mean_grad
     
     hist = [
         total_loss / total_size, 
         total_acc / total_size,
-        alpha.item()
+        #alpha.item()
         ]
 
     print(hist)
     
-    return hist, outputs, noise_norm
+    return hist, outputs, 0#, noise_norm
 
 
 if __name__ == '__main__':
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval_freq', default=100, type=int)
     parser.add_argument('--dataset', default='mnist', type=str,
         help='mnist | cifar10 | cifar100')
-    parser.add_argument('--path', default='./data', type=str)
+    parser.add_argument('--path', default='/share/cuvl/pytorch_data', type=str)
     parser.add_argument('--seed', default=0, type=int)
     parser.add_argument('--model', default='fc', type=str)
     parser.add_argument('--criterion', default='NLL', type=str,
@@ -99,6 +99,7 @@ if __name__ == '__main__':
     parser.add_argument('--double', action='store_true', default=False)
     parser.add_argument('--no_cuda', action='store_true', default=False)
     parser.add_argument('--lr_schedule', action='store_true', default=False)
+    # new code
     args = parser.parse_args()
 
     # initial setup
@@ -155,8 +156,8 @@ if __name__ == '__main__':
     # eval logs less frequently
     evaluation_history_TEST = []
     evaluation_history_TRAIN = []
-    noise_norm_history_TEST = []
-    noise_norm_history_TRAIN = []
+    # noise_norm_history_TEST = []
+    # noise_norm_history_TRAIN = []
 
     STOP = False
 
@@ -168,8 +169,8 @@ if __name__ == '__main__':
             tr_hist, tr_outputs, tr_noise_norm = eval(train_loader_eval, net, crit, opt, args, test=False)
             evaluation_history_TEST.append([i, *te_hist])
             evaluation_history_TRAIN.append([i, *tr_hist])
-            noise_norm_history_TEST.append(te_noise_norm)
-            noise_norm_history_TRAIN.append(tr_noise_norm)
+            # noise_norm_history_TEST.append(te_noise_norm)
+            # noise_norm_history_TRAIN.append(tr_noise_norm)
             if int(tr_hist[1]) == 100:
                 print('yaaay all training data is correctly classified!!!')
                 STOP = True
@@ -208,8 +209,8 @@ if __name__ == '__main__':
             tr_hist, tr_outputs, tr_noise_norm = eval(train_loader_eval, net, crit, opt, args, test=False)
             evaluation_history_TEST.append([i + 1, *te_hist])
             evaluation_history_TRAIN.append([i + 1, *tr_hist])
-            noise_norm_history_TEST.append(te_noise_norm)
-            noise_norm_history_TRAIN.append(tr_noise_norm)
+            # noise_norm_history_TEST.append(te_noise_norm)
+            # noise_norm_history_TRAIN.append(tr_noise_norm)
 
             
             if not os.path.exists(args.save_dir):
@@ -220,8 +221,8 @@ if __name__ == '__main__':
             # save the setup
             torch.save(args, args.save_dir + '/args.info')
             # save the outputs
-            torch.save(te_outputs, args.save_dir + '/te_outputs.pyT')
-            torch.save(tr_outputs, args.save_dir + '/tr_outputs.pyT')
+            #torch.save(te_outputs, args.save_dir + '/te_outputs.pyT')
+            #torch.save(tr_outputs, args.save_dir + '/tr_outputs.pyT')
             # save the model
             torch.save(net, args.save_dir + '/net.pyT') 
             # save the logs
@@ -229,8 +230,8 @@ if __name__ == '__main__':
             torch.save(weight_grad_history, args.save_dir + '/weight_history.hist')
             torch.save(evaluation_history_TEST, args.save_dir + '/evaluation_history_TEST.hist')
             torch.save(evaluation_history_TRAIN, args.save_dir + '/evaluation_history_TRAIN.hist')
-            torch.save(noise_norm_history_TEST, args.save_dir + '/noise_norm_history_TEST.hist')
-            torch.save(noise_norm_history_TRAIN, args.save_dir + '/noise_norm_history_TRAIN.hist')
+            # torch.save(noise_norm_history_TEST, args.save_dir + '/noise_norm_history_TEST.hist')
+            # torch.save(noise_norm_history_TRAIN, args.save_dir + '/noise_norm_history_TRAIN.hist')
             
             break
 
