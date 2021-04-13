@@ -143,5 +143,5 @@ def get_weights(net):
     with torch.no_grad():
         w = []
         for p in net.parameters():
-            w.append(p.view(-1))
+            w.append(p.view(-1).detach())
         return torch.cat(w)
