@@ -10,6 +10,7 @@ from models import alexnet, fc
 from utils import get_data, accuracy
 from utils import get_grads, alpha_estimator, alpha_estimator2
 from utils import linear_hinge_loss, get_layerWise_norms
+from utils import get_weights
 
 
 def eval(eval_loader, net, crit, opt, args, test=True):
@@ -85,7 +86,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval_freq', default=100, type=int)
     parser.add_argument('--dataset', default='mnist', type=str,
         help='mnist | cifar10 | cifar100')
-    parser.add_argument('--path', default='/share/cuvl/pytorch_data', type=str)
+    parser.add_argument('--path', default='/share/cuvl/aaron/', type=str)
     parser.add_argument('--seed', default=0, type=int)
     parser.add_argument('--model', default='fc', type=str)
     parser.add_argument('--criterion', default='NLL', type=str,
@@ -101,6 +102,7 @@ if __name__ == '__main__':
     parser.add_argument('--no_cuda', action='store_true', default=False)
     parser.add_argument('--lr_schedule', action='store_true', default=False)
     # new code
+    parser.add_argument('--save_x', default=1000, type=int)
     args = parser.parse_args()
 
     # initial setup
@@ -160,6 +162,9 @@ if __name__ == '__main__':
     # noise_norm_history_TEST = []
     # noise_norm_history_TRAIN = []
 
+    # weights
+    weights_history = []
+
     STOP = False
 
     for i, (x, y) in enumerate(circ_train_loader):
@@ -203,6 +208,9 @@ if __name__ == '__main__':
         if i > args.iterations:
             STOP = True
 
+        if i > args.iterations - args.save_x:
+            weights_history.append(get_weights(net))
+
         if STOP:
             # final evaluation and saving results
             print('eval time {}'.format(i))
@@ -233,6 +241,8 @@ if __name__ == '__main__':
             torch.save(evaluation_history_TRAIN, args.save_dir + '/evaluation_history_TRAIN.hist')
             # torch.save(noise_norm_history_TEST, args.save_dir + '/noise_norm_history_TEST.hist')
             # torch.save(noise_norm_history_TRAIN, args.save_dir + '/noise_norm_history_TRAIN.hist')
+
+            torch.save(weights_history, args.save_dir + '/weight_history.hist')
             
             break
 

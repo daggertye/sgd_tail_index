@@ -138,3 +138,10 @@ def get_data(args):
         )
 
     return train_loader, test_loader_eval, train_loader_eval, num_classes
+
+def get_weights(net):
+    with torch.no_grad():
+        w = []
+        for p in net.parameters():
+            w.append(p.view(-1))
+        return torch.cat(w)
