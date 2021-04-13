@@ -126,7 +126,7 @@ if __name__ == '__main__':
     elif args.model == 'alexnet':
         net = alexnet(ch=args.scale, num_classes=num_classes).to(args.device)
     elif args.model == 'vgg':
-        net = vgg(depth=args.depth, num_classes=num_classes, batch_norm=args.bn)
+        net = vgg(depth=args.depth, num_classes=num_classes, batch_norm=args.bn).to(args.device)
 
     print(net)
     
