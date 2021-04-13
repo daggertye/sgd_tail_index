@@ -15,7 +15,7 @@ from utils import get_weights
 
 def eval(eval_loader, net, crit, opt, args, test=True):
 
-    #net.eval()
+    net.eval()
 
     # run over both test and train set
     with torch.no_grad():    
@@ -181,7 +181,7 @@ if __name__ == '__main__':
                 print('yaaay all training data is correctly classified!!!')
                 STOP = True
 
-        #net.train()
+        net.train()
         
         x, y = x.to(args.device), y.to(args.device)
 
@@ -210,6 +210,9 @@ if __name__ == '__main__':
 
         if i > args.iterations - args.save_x:
             weights_history.append(get_weights(net))
+
+        # clear cache
+        torch.cuda.empty_cache()
 
         if STOP:
             # final evaluation and saving results
