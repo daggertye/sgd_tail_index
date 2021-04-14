@@ -192,6 +192,10 @@ if __name__ == '__main__':
         out = net(x)
         loss = crit(out, y)
 
+        if torch.isnan(loss):
+            print('Loss has gone nan :(.')
+            STOP = True
+
         # calculate the gradients
         loss.backward()
 
@@ -211,8 +215,7 @@ if __name__ == '__main__':
         if i > args.iterations:
             STOP = True
 
-        if i > args.iterations - args.save_x:
-            weights_history.append(get_weights(net))
+        weights_history.append(get_weights(net))
 
         # clear cache
         torch.cuda.empty_cache()
@@ -222,8 +225,9 @@ if __name__ == '__main__':
             print('eval time {}'.format(i))
             te_hist, te_outputs, te_noise_norm = eval(test_loader_eval, net, crit, opt, args)
             tr_hist, tr_outputs, tr_noise_norm = eval(train_loader_eval, net, crit, opt, args, test=False)
-            evaluation_history_TEST.append([i + 1, *te_hist])
+            evaluation_history_TEST.append([i + 1, *te_hist]) 
             evaluation_history_TRAIN.append([i + 1, *tr_hist])
+
             # noise_norm_history_TEST.append(te_noise_norm)
             # noise_norm_history_TRAIN.append(tr_noise_norm)
 
