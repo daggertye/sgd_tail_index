@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+from collections import deque
 from models import alexnet, fc, vgg
 from utils import get_data, accuracy
 from utils import get_grads, alpha_estimator, alpha_estimator2
@@ -166,7 +167,7 @@ if __name__ == '__main__':
     # noise_norm_history_TRAIN = []
 
     # weights
-    weights_history = []
+    weights_history = deque([])
 
     STOP = False
 
@@ -216,6 +217,8 @@ if __name__ == '__main__':
             STOP = True
 
         weights_history.append(get_weights(net))
+        if len(weight_history > args.save_x):
+            weights_history.popleft()
 
         # clear cache
         torch.cuda.empty_cache()
