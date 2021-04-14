@@ -216,9 +216,8 @@ if __name__ == '__main__':
         if i > args.iterations:
             STOP = True
 
-        weights_history.append(get_weights(net))
-        if len(weights_history) > args.save_x:
-            weights_history.popleft()
+        if i > args.iterations - args.save_x:
+            torch.save(get_weights(net), args.save_dir + f'/weights/{i}.pt')
 
         # clear cache
         torch.cuda.empty_cache()
@@ -255,7 +254,7 @@ if __name__ == '__main__':
             # torch.save(noise_norm_history_TEST, args.save_dir + '/noise_norm_history_TEST.hist')
             # torch.save(noise_norm_history_TRAIN, args.save_dir + '/noise_norm_history_TRAIN.hist')
 
-            torch.save(weights_history, args.save_dir + '/weight_history.hist')
+            # torch.save(weights_history, args.save_dir + '/weight_history.hist')
             
             break
 
