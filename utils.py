@@ -143,5 +143,5 @@ def get_weights(net):
     with torch.no_grad():
         w = []
         for p in net.parameters():
-            w.append(p.view(-1).detach())
+            w.append(p.view(-1).detach()).to(torch.device('cpu'))
         return torch.cat(w)
