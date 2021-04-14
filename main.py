@@ -217,7 +217,7 @@ if __name__ == '__main__':
             STOP = True
 
         weights_history.append(get_weights(net))
-        if len(weights_history > args.save_x):
+        if len(weights_history) > args.save_x:
             weights_history.popleft()
 
         # clear cache
