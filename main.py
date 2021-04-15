@@ -113,6 +113,13 @@ if __name__ == '__main__':
     args.use_cuda = not args.no_cuda and torch.cuda.is_available()
     args.device = torch.device('cuda' if args.use_cuda else 'cpu')
     torch.manual_seed(args.seed)
+
+    if not os.path.exists(args.save_dir):
+        os.makedirs(args.save_dir)
+        os.makedirs(args.save_dir + '/weights/')
+    else:
+        print('Folder already exists, beware of overriding old data!')
+        return
     
     print(args)
 
@@ -236,10 +243,6 @@ if __name__ == '__main__':
             # noise_norm_history_TRAIN.append(tr_noise_norm)
 
             
-            if not os.path.exists(args.save_dir):
-                os.makedirs(args.save_dir)
-            else:
-                print('Folder already exists, beware of overriding old data!')
 
             # save the setup
             torch.save(args, args.save_dir + '/args.info')
