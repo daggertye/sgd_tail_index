@@ -119,7 +119,7 @@ if __name__ == '__main__':
         os.makedirs(args.save_dir + '/weights/')
     else:
         print('Folder already exists, beware of overriding old data!')
-        return
+        exit()
     
     print(args)
 
