@@ -216,8 +216,10 @@ if __name__ == '__main__':
         if i > args.iterations:
             STOP = True
 
-        if i > args.iterations - args.save_x:
-            torch.save(get_weights(net), args.save_dir + f'/weights/{i}.pt')
+        torch.save(get_weights(net), args.save_dir + f'/weights/{i}.pt')
+        if i >= args.save_x:
+            assert os.path.exists(args.save_dir + f'/weights/{i - args.save_x}.pt')
+            os.remove(args.save_dir + f'/weights/{i - args.save_x}.pt')
 
         # clear cache
         torch.cuda.empty_cache()
