@@ -7,6 +7,8 @@ base_path = 'results_alexnet'
 
 if not os.path.exists(base_path):
     os.makedirs(base_path)
+if not os.path.exists(base_path + "/outputs"):
+    os.makedirs(base_path + "/outputs")
 
 # experimental setup
 seeds = list(range(3))
