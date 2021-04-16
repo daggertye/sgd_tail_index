@@ -27,6 +27,6 @@ for s, d, lr, bs in grid:
 
     print(cmd)
 
-    #f = open(save_dir + '.log', 'w')
-    #subprocess.Popen(cmd.split(), stdout=f, stderr=f)
+    f = open(save_dir + '.log', 'w')
+    subprocess.Popen(cmd.split(), stdout=f, stderr=f)
     
