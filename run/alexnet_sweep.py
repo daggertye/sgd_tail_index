@@ -14,7 +14,7 @@ dataset = ['cifar10', 'cifar100']
 learning_rates = [0.05, 0.1, 0.15, 0.2, 0.25]
 batch_size = [16, 32, 64, 128]
 
-grid = itertools.product(seeds, dataset, model, learning_rates, batch_size)
+grid = itertools.product(seeds, dataset, learning_rates, batch_size)
 
 processes = []
 for s, d, lr, bs in grid:
