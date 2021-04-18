@@ -9,4 +9,4 @@
 
 source activate TopNetwork
 
-python main.py --save_dir results_vgg/${DATASET}_${LR}_${BATCH}_${SEED} --dataset $DATASET --model alexnet --lr $LR --batch_size_train $BATCH --seed $SEED --depth $NUMLAYERS
+python main.py --save_dir results_vgg/${DATASET}_${NUMLAYERS}_${LR}_${BATCH}_${SEED} --dataset $DATASET --model alexnet --lr $LR --batch_size_train $BATCH --seed $SEED --depth $NUMLAYERS
