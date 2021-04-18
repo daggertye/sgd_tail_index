@@ -25,7 +25,7 @@ for s, d, lr, bs in grid:
         print(f'folder already exists for {d, lr, bs, s}')
         continue
 
-    cmd = f"sbatch --requeue --export=ALL,DATASET={d},LR={lr},BATCH={bs},SEED={s} run/alexnet_template.sh"
+    cmd = f"sbatch --requeue --export=ALL,DATASET={d},LR={lr},BATCH={bs},SEED={s} run/alexnet/template.sh"
 
     print(cmd)
 
