@@ -58,10 +58,10 @@ if __name__=="__main__":
         weights = []
         for w in weight_iters:
             weights.append(torch.load(os.path.join(weights_path, str(w) + '.pt')))
-        weights = torch.stack(weights)
+        weights = torch.stack(weights).detach().numpy()
 
         # calculate ph
-        diagrams = ripser(weights, maxdim=2)['dgms']
+        diagrams = ripser(weights, maxdim=1)['dgms']
         fig = plt.figure(frameon=False)
         ax = fig.add_axes([0, 0, 1, 1])
         ax.axis('off')
