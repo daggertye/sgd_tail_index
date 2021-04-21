@@ -12,9 +12,6 @@ from persim import plot_diagrams
 from ripser import ripser
 
 
-def viz(save_dir):
-    pass
-
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_dir', default="results_alexnet", type=str)
@@ -32,9 +29,9 @@ if __name__=="__main__":
     # loop through the values
     for f in os.listdir(args.model_dir):
         if not os.path.isdir(os.path.join(args.model_dir, f)):
-            pass
+            continue
         if f == 'outputs':
-            pass
+            continue
 
         # make sure eval history is gucc
         eval_history = torch.load(os.path.join(args.model_dir, f, 'evaluation_history_TRAIN.hist'))
