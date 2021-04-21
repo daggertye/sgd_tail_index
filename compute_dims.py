@@ -102,3 +102,4 @@ if __name__=="__main__":
         test_history = torch.load(os.path.join(args.model_dir, f, 'evaluation_history_TEST.hist'))
         test_history = torch.tensor(test_history)
         output_file.write(f"Run: {f}, train acc: {eval_history[-1, -1]:.2f}, test acc: {test_history[-1, -1]:.2f}, ph_dim: {ph_dim:.3f}")
+    output_file.close()
