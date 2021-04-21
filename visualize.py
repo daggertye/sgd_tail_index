@@ -66,5 +66,5 @@ if __name__=="__main__":
         ax = fig.add_axes([0, 0, 1, 1])
         ax.axis('off')
         plot_diagrams(diagrams, show=False, lifetime=True)
-        plt.save(os.path.join(args.save_dir, f + '.png'))
+        plt.savefig(os.path.join(args.save_dir, f + '.png'))
 
