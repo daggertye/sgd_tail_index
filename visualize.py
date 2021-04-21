@@ -31,7 +31,9 @@ if __name__=="__main__":
 
     # loop through the values
     for f in os.listdir(args.model_dir):
-        if not os.path.isdir(os.path.join(args.model_dir, f)) or f == 'outputs':
+        if not os.path.isdir(os.path.join(args.model_dir, f)):
+            pass
+        if f == 'outputs':
             pass
 
         # make sure eval history is gucc
