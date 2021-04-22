@@ -30,5 +30,5 @@ for s, d, lr, bs, nl in grid:
 
     print(cmd)
 
-    subprocess.Popen(cmd.split())
+    os.system(cmd)
     

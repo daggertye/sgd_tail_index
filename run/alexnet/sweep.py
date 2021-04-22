@@ -29,5 +29,5 @@ for s, d, lr, bs in grid:
 
     print(cmd)
 
-    subprocess.Popen(cmd.split())
+    os.system(cmd)
     
