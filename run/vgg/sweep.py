@@ -25,6 +25,8 @@ for s, d, lr, bs, nl in grid:
     if os.path.exists(save_dir):
         print(f'folder already exists for {d, nl, lr, bs, s}')
         continue
+    else:
+        os.mkdir(save_dir)
 
     cmd = f"sbatch --requeue --export=ALL,DATASET={d},LR={lr},BATCH={bs},SEED={s},NUMLAYERS={nl} run/vgg/template.sh"
 
