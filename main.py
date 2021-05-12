@@ -120,8 +120,8 @@ if __name__ == '__main__':
         os.makedirs(os.path.join(args.save_dir, '/weights/'))
     else:
         print('Folder already exists, beware of overriding old data!')
-        if not os.path.exists(os.path.join(args.save_dir, '/weights/')):
-            os.makedirs(os.path.join(args.save_dir, '/weights/'))
+        if not os.path.exists(os.path.join(args.save_dir, 'weights/')):
+            os.makedirs(os.path.join(args.save_dir, 'weights/'))
         #exit()
     
     print(args)
