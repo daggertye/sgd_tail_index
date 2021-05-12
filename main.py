@@ -105,6 +105,7 @@ if __name__ == '__main__':
     # new code
     parser.add_argument('--save_x', default=1000, type=int)
     parser.add_argument('--bn', action='store_true', default=False)
+    parser.add_argument('--optim', default='SGD', type=str)
     args = parser.parse_args()
 
     # initial setup
@@ -116,10 +117,12 @@ if __name__ == '__main__':
 
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
-        os.makedirs(args.save_dir + '/weights/')
+        os.makedirs(os.path.join(args.save_dir, '/weights/'))
     else:
         print('Folder already exists, beware of overriding old data!')
-        exit()
+        if not os.path.exists(os.path.join(args.save_dir, '/weights/')):
+            os.makedirs(os.path.join(args.save_dir, '/weights/'))
+        #exit()
     
     print(args)
 
@@ -138,11 +141,9 @@ if __name__ == '__main__':
 
     print(net)
     
-    opt = optim.SGD(
+    opt = getattr(optim, args.optim)(
         net.parameters(), 
-        lr=args.lr, 
-        momentum=args.mom,
-        weight_decay=args.wd
+        lr=args.lr
         )
 
     if args.lr_schedule:

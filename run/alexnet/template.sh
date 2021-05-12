@@ -9,4 +9,4 @@
 
 source activate TopNetwork
 
-python main.py --save_dir results_alexnet/${DATASET}_${LR}_${BATCH}_${SEED} --dataset $DATASET --model alexnet --lr $LR --batch_size_train $BATCH --seed $SEED
+python main.py --save_dir results_alexnet/${DATASET}_${OPTIM}_${LR}_${BATCH}_${SEED} --dataset $DATASET --model alexnet --lr $LR --batch_size_train $BATCH --seed $SEED
