@@ -12,7 +12,7 @@ if not os.path.exists(base_path + "/outputs"):
 
 # experimental setup
 seeds = list(range(3))
-optimizers = ['Adam', 'RmsProp']
+optimizers = ['Adam', 'RMSprop']
 dataset = ['cifar10', 'cifar100']
 learning_rates = [0.01, 0.05, 0.1]
 batch_size = [128, 192, 256]

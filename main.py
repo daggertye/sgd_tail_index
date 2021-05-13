@@ -122,7 +122,7 @@ if __name__ == '__main__':
         print('Folder already exists, beware of overriding old data!')
         if not os.path.exists(os.path.join(args.save_dir, 'weights/')):
             os.makedirs(os.path.join(args.save_dir, 'weights/'))
-        #exit()
+        exit()
     
     print(args)
 
@@ -224,10 +224,11 @@ if __name__ == '__main__':
         if i > args.iterations:
             STOP = True
 
-        torch.save(get_weights(net), args.save_dir + f'/weights/{i}.pt')
-        if i >= args.save_x:
-            assert os.path.exists(args.save_dir + f'/weights/{i - args.save_x}.pt')
-            os.remove(args.save_dir + f'/weights/{i - args.save_x}.pt')
+        # torch.save(get_weights(net), args.save_dir + f'/weights/{i}.pt')
+        if i >= args.iterations - args.save_x:
+            torch.save(get_weights(net), args.save_dir + f'/weights/{i}.pt')
+            #assert os.path.exists(args.save_dir + f'/weights/{i - args.save_x}.pt')
+            #os.remove(args.save_dir + f'/weights/{i - args.save_x}.pt')
 
         # clear cache
         torch.cuda.empty_cache()
