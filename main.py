@@ -91,6 +91,7 @@ if __name__ == '__main__':
     parser.add_argument('--save_x', default=1000, type=int)
     parser.add_argument('--bn', action='store_true', default=False)
     parser.add_argument('--optim', default='SGD', type=str)
+    parser.add_argument('--ignore_previous', action='store_true', default=False)
     args = parser.parse_args()
 
     # initial setup
@@ -101,6 +102,15 @@ if __name__ == '__main__':
     torch.manual_seed(args.seed)
 
     print(args)
+
+    # check to see if stuff has run already
+    if not args.ignore_previous:
+        with open(args.save_file, 'r') as f:
+            for line in f.readlines():
+                if args.meta_data == line.split(',')[0]:
+                    print(f"Metadata {args.meta_data} already ran. Exiting.")
+                    exit()
+
 
     # training setup
     train_loader, test_loader_eval, train_loader_eval, num_classes = get_data(args)
