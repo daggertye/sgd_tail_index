@@ -211,6 +211,7 @@ if __name__ == '__main__':
             evaluation_history_TEST.append([i + 1, *te_hist]) 
             evaluation_history_TRAIN.append([i + 1, *tr_hist])
 
+            weights_history = torch.stack(weights_history).numpy()
             ph_dim = calculate_ph_dim(weights_history)
 
             test_acc = evaluation_history_TEST[-1][1]
