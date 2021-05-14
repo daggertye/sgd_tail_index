@@ -215,8 +215,8 @@ if __name__ == '__main__':
             del weights_history
             ph_dim = calculate_ph_dim(weights_history_np)
 
-            test_acc = evaluation_history_TEST[-1][1]
-            train_acc = evaluation_history_TRAIN[-1][1]
+            test_acc = evaluation_history_TEST[-1][2]
+            train_acc = evaluation_history_TRAIN[-1][2]
 
             with open(args.save_file, 'a') as f:
                 f.write("{args.meta_data}, {train_acc}, {test_acc}\n")
