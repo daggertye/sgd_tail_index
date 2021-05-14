@@ -12,6 +12,8 @@ from utils import get_data, accuracy
 from utils import get_grads, alpha_estimator, alpha_estimator2
 from utils import linear_hinge_loss, get_layerWise_norms
 from utils import get_weights
+from compute_dims import calculate_ph_dim
+# from visualize import viz_ph
 
 
 def eval(eval_loader, net, crit, opt, args, test=True):
@@ -40,33 +42,13 @@ def eval(eval_loader, net, crit, opt, args, test=True):
             prec = accuracy(out, y)
             bs = x.size(0)
 
-            # loss.backward()
-            # grad = get_grads(net).cpu()
-            # grads.append(grad)
-
             total_size += int(bs)
             total_loss += float(loss) * bs
             total_acc += float(prec) * bs
-
-        # M = len(grads[0]) # total number of parameters
-        # grads = torch.cat(grads).view(-1, M)
-        # mean_grad = grads.sum(0) / P
-        # noise_norm = (grads - mean_grad).norm(dim=1)
-        
-        # N = M * P 
-
-        # for i in range(1, 1 + int(math.sqrt(N))):
-        #     if N%i == 0:
-        #         m = i
-        # alpha = alpha_estimator(m, (grads - mean_grad).view(-1, 1))
-        
-        # del grads
-        # del mean_grad
         
     hist = [
         total_loss / total_size, 
         total_acc / total_size,
-        #alpha.item()
         ]
 
     print(hist)
@@ -97,7 +79,10 @@ if __name__ == '__main__':
     parser.add_argument('--depth', default=3, type=int)
     parser.add_argument('--width', default=100, type=int, 
         help='width of fully connected layers')
-    parser.add_argument('--save_dir', default='results/', type=str)
+    parser.add_argument('--meta_data', default='results', type=str)
+    parser.add_argument('--save_file', default='dims.txt', type=str)
+    parser.add_argument('--save_ph', default=None)
+    parser.add_argument('--save_mst', default=None)
     parser.add_argument('--verbose', action='store_true', default=False)
     parser.add_argument('--double', action='store_true', default=False)
     parser.add_argument('--no_cuda', action='store_true', default=False)
@@ -115,15 +100,6 @@ if __name__ == '__main__':
     args.device = torch.device('cuda' if args.use_cuda else 'cpu')
     torch.manual_seed(args.seed)
 
-    if not os.path.exists(args.save_dir):
-        os.makedirs(args.save_dir)
-        os.makedirs(os.path.join(args.save_dir, 'weights/'))
-    else:
-        print('Folder already exists, beware of overriding old data!')
-        if not os.path.exists(os.path.join(args.save_dir, 'weights/')):
-            os.makedirs(os.path.join(args.save_dir, 'weights/'))
-        exit()
-    
     print(args)
 
     # training setup
@@ -166,13 +142,10 @@ if __name__ == '__main__':
     
     # training logs per iteration
     training_history = []
-    weight_grad_history = []
 
     # eval logs less frequently
     evaluation_history_TEST = []
     evaluation_history_TRAIN = []
-    # noise_norm_history_TEST = []
-    # noise_norm_history_TRAIN = []
 
     # weights
     weights_history = deque([])
@@ -187,8 +160,6 @@ if __name__ == '__main__':
             tr_hist, tr_outputs, tr_noise_norm = eval(train_loader_eval, net, crit, opt, args, test=False)
             evaluation_history_TEST.append([i, *te_hist])
             evaluation_history_TRAIN.append([i, *tr_hist])
-            # noise_norm_history_TEST.append(te_noise_norm)
-            # noise_norm_history_TRAIN.append(tr_noise_norm)
             if int(tr_hist[1]) == 100:
                 print('yaaay all training data is correctly classified!!!')
                 STOP = True
@@ -210,7 +181,6 @@ if __name__ == '__main__':
 
         # record training history (starts at initial point)
         training_history.append([i, loss.item(), accuracy(out, y).item()])
-        weight_grad_history.append([i, *get_layerWise_norms(net)])
 
         # take the step
         opt.step()
@@ -224,16 +194,16 @@ if __name__ == '__main__':
         if i > args.iterations:
             STOP = True
 
-        # torch.save(get_weights(net), args.save_dir + f'/weights/{i}.pt')
-        if i >= args.iterations - args.save_x:
-            torch.save(get_weights(net), args.save_dir + f'/weights/{i}.pt')
-            #assert os.path.exists(args.save_dir + f'/weights/{i - args.save_x}.pt')
-            #os.remove(args.save_dir + f'/weights/{i - args.save_x}.pt')
+        weights_history.append(get_weights(net))
+        if len(weights_history) > 1000:
+            weights_history.popleft()
 
         # clear cache
         torch.cuda.empty_cache()
 
         if STOP:
+            assert len(weights_history) == 1000
+
             # final evaluation and saving results
             print('eval time {}'.format(i))
             te_hist, te_outputs, te_noise_norm = eval(test_loader_eval, net, crit, opt, args)
@@ -241,27 +211,13 @@ if __name__ == '__main__':
             evaluation_history_TEST.append([i + 1, *te_hist]) 
             evaluation_history_TRAIN.append([i + 1, *tr_hist])
 
-            # noise_norm_history_TEST.append(te_noise_norm)
-            # noise_norm_history_TRAIN.append(tr_noise_norm)
+            ph_dim = calculate_ph_dim(weights_history)
 
-            
+            test_acc = evaluation_history_TEST[-1][1]
+            train_acc = evaluation_history_TRAIN[-1][1]
 
-            # save the setup
-            torch.save(args, args.save_dir + '/args.info')
-            # save the outputs
-            #torch.save(te_outputs, args.save_dir + '/te_outputs.pyT')
-            #torch.save(tr_outputs, args.save_dir + '/tr_outputs.pyT')
-            # save the model
-            torch.save(net, args.save_dir + '/net.pyT') 
-            # save the logs
-            torch.save(training_history, args.save_dir + '/training_history.hist')
-            torch.save(weight_grad_history, args.save_dir + '/weight_history.hist')
-            torch.save(evaluation_history_TEST, args.save_dir + '/evaluation_history_TEST.hist')
-            torch.save(evaluation_history_TRAIN, args.save_dir + '/evaluation_history_TRAIN.hist')
-            # torch.save(noise_norm_history_TEST, args.save_dir + '/noise_norm_history_TEST.hist')
-            # torch.save(noise_norm_history_TRAIN, args.save_dir + '/noise_norm_history_TRAIN.hist')
-
-            # torch.save(weights_history, args.save_dir + '/weight_history.hist')
+            with open(args.save_file, 'a') as f:
+                f.write("{args.meta_data}, {train_acc}, {test_acc}\n")
             
             break
 
