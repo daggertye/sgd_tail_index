@@ -2,7 +2,7 @@
 #SBATCH -N 1
 #SBATCH --mem=128000
 #SBATCH -t 48:00:00
-#SBATCH --partition=cuvl
+#SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH -o results_vgg/outputs/%j.out
 #SBATCH -e results_vgg/outputs/%j.err
