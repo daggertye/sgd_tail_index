@@ -229,7 +229,7 @@ if __name__ == '__main__':
             train_acc = evaluation_history_TRAIN[-1][2]
 
             with open(args.save_file, 'a') as f:
-                f.write("{args.meta_data}, {train_acc}, {test_acc}\n")
+                f.write(f"{args.meta_data}, {train_acc}, {test_acc}\n")
             
             break
 
