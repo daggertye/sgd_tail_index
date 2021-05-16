@@ -62,7 +62,6 @@ class AlexNet(nn.Module):
         )
         
         self.size = self.get_size()
-        print(self.size)
         a = torch.tensor(self.size).float()
         b = torch.tensor(2).float()
         self.width = int(a) * int(1 + torch.log(a) / torch.log(b))
