@@ -94,6 +94,8 @@ if __name__ == '__main__':
     parser.add_argument('--ignore_previous', action='store_true', default=False)
     args = parser.parse_args()
 
+    
+
     # initial setup
     if args.double:
         torch.set_default_tensor_type('torch.DoubleTensor')
@@ -229,7 +231,7 @@ if __name__ == '__main__':
             train_acc = evaluation_history_TRAIN[-1][2]
 
             with open(args.save_file, 'a') as f:
-                f.write(f"{args.meta_data}, {train_acc}, {test_acc}\n")
+                f.write(f"{args.meta_data}, {train_acc}, {test_acc}, {ph_dim}\n")
             
             break
 
