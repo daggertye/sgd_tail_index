@@ -123,7 +123,10 @@ if __name__ == '__main__':
         elif args.dataset == 'cifar10':
             net = fc(width=args.width, depth=args.depth, num_classes=num_classes, input_dim=3*32*32).to(args.device)
     elif args.model == 'alexnet':
-        net = alexnet(ch=args.scale, num_classes=num_classes).to(args.device)
+        if args.dataset == 'mnist':
+            net = alexnet(input_height=28, input_width=28, input_channels=1, num_classes=num_classes)
+        else:
+            net = alexnet(ch=args.scale, num_classes=num_classes).to(args.device)
     elif args.model == 'vgg':
         net = vgg(depth=args.depth, num_classes=num_classes, batch_norm=args.bn).to(args.device)
 
