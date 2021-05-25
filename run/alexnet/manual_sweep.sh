@@ -9,4 +9,4 @@
 
 source activate TopNetwork
 
-python manual_sweep 0 4
+python run/alexnet/manual_sweep 0 4
